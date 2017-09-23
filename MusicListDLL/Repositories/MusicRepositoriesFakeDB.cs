@@ -1,8 +1,7 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Text;
-using MusicListEntities;
 using System.Linq;
+using MusicListDAL.Entities;
 
 namespace MusicListDAL.Repositories
 {

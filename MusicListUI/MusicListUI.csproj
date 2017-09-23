@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MusicListBLL\MusicListBLL.csproj" />
-    <ProjectReference Include="..\MusicListEntities\MusicListEntities.csproj" />
   </ItemGroup>
 
 </Project>

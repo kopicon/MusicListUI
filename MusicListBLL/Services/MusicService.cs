@@ -1,48 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using MusicListEntities;
 using MusicListDAL;
+using MusicListBLL.BusinessObjects;
+using MusicListDAL.Entities;
 using System.Linq;
+using MusicListBLL.Converters;
 
 namespace MusicListBLL.Services
 {
     public class MusicService : IMusicService
     {
-        IMusicRepository repo;
+        MusicConverter conv = new MusicConverter();
+        DALFacade facade;
 
-        public MusicService(IMusicRepository repo)
+        public MusicService(DALFacade facade)
         {
-            this.repo = repo;
-        }
-        public Music Add(Music music)
-        {
-            return repo.Add(music);
+            this.facade = facade;
         }
 
-        public Music Delete(int Id)
+        public MusicBO Add(MusicBO music)
         {
-            return repo.Delete(Id);
-        }
-        public Music Edit(Music music)
-        {
-            var musicFromDb = GetMusic(music.Id);
-            if (musicFromDb == null)
+            using (var uow = facade.UnitOfWork)
             {
-                throw new InvalidOperationException("Music not found");
+                var newMusic = uow.MusicRepository.Add(conv.Convert(music));
+                uow.Complete();
+                return conv.Convert(newMusic);
             }
-            musicFromDb.Name = music.Name;
-            musicFromDb.Style = music.Style;
-            return musicFromDb;
         }
 
-        public List<Music> GetAllMusic()
+        public MusicBO Delete(int Id)
         {
-            return repo.GetAllMusic();
-        } 
-        public Music GetMusic(int Id)
-        {
-            return repo.GetMusic(Id);
+            using (var uow = facade.UnitOfWork)
+            {
+                var newMusic = uow.MusicRepository.Delete(Id);
+                uow.Complete();
+                return conv.Convert(newMusic);
+            }
         }
+
+        public MusicBO Edit(MusicBO music)
+        {
+            using (var uow = facade.UnitOfWork)
+            {
+                var musicFromDb = uow.MusicRepository.GetMusic(music.Id);
+                if (musicFromDb == null)
+                {
+                    throw new InvalidOperationException("Music not found");
+                }
+                musicFromDb.Name = music.Name;
+                musicFromDb.Style = music.Style;
+                uow.Complete();
+                return conv.Convert(musicFromDb);
+            }
+        }
+
+        public List<MusicBO> GetAllMusic()
+        {
+            using (var uow = facade.UnitOfWork)
+            {
+                //return uow.MusicRepository.GetAllMusic();
+                return uow.MusicRepository.GetAllMusic().Select(conv.Convert).ToList();
+            }
+        }
+
+        public MusicBO GetMusic(int Id)
+        {
+            using (var uow = facade.UnitOfWork)
+            {
+                return conv.Convert(uow.MusicRepository.GetMusic(Id));
+            }
+        }
+
     }
 }

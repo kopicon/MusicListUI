@@ -8,9 +8,9 @@ namespace MusicListBLL
 {
     public class BLLFacade
     {
-        public IMusicService GetMusicService()
+        public IMusicService MusicService
         {
-            return new MusicService(new DALFacade().MusicRepository);
+            get { return new MusicService(new DALFacade()); }
         }
     }
 }

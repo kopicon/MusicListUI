@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MusicListEntities;
 using MusicListDAL.Context;
 using System.Linq;
+using MusicListDAL.Entities;
 
 namespace MusicListDAL.Repositories
 {
@@ -17,7 +17,6 @@ namespace MusicListDAL.Repositories
         public Music Add(Music music)
         {
             context.Musics.Add(music);
-            context.SaveChanges();
             return music;
         }
 
@@ -25,7 +24,6 @@ namespace MusicListDAL.Repositories
         {
             var music = GetMusic(Id);
             context.Musics.Remove(music);
-            context.SaveChanges();
             return music;
         }
 

@@ -1,7 +1,6 @@
-﻿using MusicListEntities;
-using System;
+﻿using MusicListDAL.Entities;
 using System.Collections.Generic;
-using System.Text;
+
 
 namespace MusicListDAL
 {

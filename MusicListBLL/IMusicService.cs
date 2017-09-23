@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MusicListBLL.BusinessObjects;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using MusicListEntities;
+
 
 namespace MusicListBLL
 {
     public interface IMusicService
     {
-        Music GetMusic(int Id);
-        List<Music> GetAllMusic();
-        Music Add(Music music);
-        Music Delete(int Id);
-        Music Edit(Music music);    
+        MusicBO GetMusic(int Id);
+        List<MusicBO> GetAllMusic();
+        MusicBO Add(MusicBO music);
+        MusicBO Delete(int Id);
+        MusicBO Edit(MusicBO music);    
     }
 }

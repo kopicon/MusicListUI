@@ -1,15 +1,15 @@
 ﻿using System;
 using static System.Console;
-using MusicListDAL;
 using MusicListBLL;
-using MusicListEntities;
+using MusicListBLL.BusinessObjects;
 
 namespace MusicListUI
 {
     class Program
     {
         static BLLFacade bllFacade = new BLLFacade();
-        public static void Showmenu()
+        
+        static void Main(string[] args)
         {
             string[] menuItems = {
                 "List of all musics",
@@ -19,23 +19,31 @@ namespace MusicListUI
                 "Exit"
             };
 
-            var MenuOptions = ShowMenu(menuItems);
-            while (MenuOptions != 5)
+            var selection = ShowMenu(menuItems);
+            while (selection != 5)
             {
-                switch (MenuOptions)
+                switch (selection)
                 {
                     case 1:
-                        bllFacade.
-                        break;
+                        {
+                            ShowAllMusics();
+                            break;
+                        }
                     case 2:
-                        .AddMusic();
-                        break;
+                        {
+                            AddMusic();
+                            break;
+                        }
                     case 3:
-                        .DeleteMusic();
-                        break;
+                        {
+                            DeletMusic();
+                            break;
+                        }
                     case 4:
-                        .EditVideo();
-                        break;
+                        {
+                            EditMusic();
+                            break;
+                        }
                     default:
                         break;
                 }
@@ -43,11 +51,7 @@ namespace MusicListUI
             WriteLine("Bye bye!!");
             Environment.Exit(0);
         }
-        static void Main(string[] args)
-        {
-
-        }
-        private static void EditVideo()
+        private static void EditMusic()
         {
             var Music = FindMusicById();
             if (Music != null)
@@ -57,6 +61,7 @@ namespace MusicListUI
                 WriteLine("Enter the new style of the music:\n");
                 Music.Style = ReadLine();
                 WriteLine("You successfully changed the music");
+                bllFacade.MusicService.Edit(Music);
             }
             else
             {
@@ -67,7 +72,7 @@ namespace MusicListUI
         {
             WriteLine("Here you can see all the stored musics:\n");
 
-            foreach (var item in bllFacade.GetMusicService().GetAllMusic()) 
+            foreach (var item in bllFacade.MusicService.GetAllMusic()) 
             {
                 WriteLine($"Id: { item.Id}\n" +
                           $"Name: {item.Name }\n" +
@@ -83,7 +88,7 @@ namespace MusicListUI
             WriteLine("The Style of the music: \n");
             var style = ReadLine();
 
-            bllFacade.GetMusicService().Add(new Music()
+            bllFacade.MusicService.Add(new MusicBO()
             {
                 Name = name,
                 Style = style
@@ -91,7 +96,7 @@ namespace MusicListUI
             WriteLine("You successfully added " + name + " to the list");
         }
            
-        private static Music FindMusicById()
+        private static MusicBO FindMusicById()
         {
         WriteLine("Insert Music Id: \n");
         int id;
@@ -99,7 +104,7 @@ namespace MusicListUI
             {
                 WriteLine("Please insert a number");
             }
-            return bllFacade.GetMusicService().GetMusic(id);
+            return bllFacade.MusicService.GetMusic(id);
         }
 
         private static void DeletMusic()
@@ -107,18 +112,31 @@ namespace MusicListUI
             var musicFound = FindMusicById();
             if (musicFound != null)
             {
-                bllFacade.GetMusicService().Delete(musicFound.Id);
+                bllFacade.MusicService.Delete(musicFound.Id);
  
             }
             var response = musicFound == null ? "Music not Found!" : "Music was Deleted";
             WriteLine(response);
         }
+        private static int ShowMenu(string[] menuItems)
+        {
+            Console.WriteLine("Select What you want to do:\n");
 
+            for (int i = 0; i < menuItems.Length; i++)
+            {
+                Console.WriteLine($"{(i + 1)}: {menuItems[i]}");
+            }
 
+            int selection;
+            while (!int.TryParse(Console.ReadLine(), out selection)
+                || selection < 1
+                || selection > 5)
+            {
+                Console.WriteLine("Please select a number between 1-5");
+            }
 
-
+            return selection;
+        }
     }
-
-
 }
 
